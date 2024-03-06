@@ -1,0 +1,54 @@
+{
+  "name": "overflow-scroll-fade",
+  "description": "Fade effect for scrollable elements with overflow.",
+  "version": "0.0.0-development",
+  "repository": "github:tobua/overflow-scroll-fade",
+  "homepage": "https://tobua.github.io/overflow-scroll-fade",
+  "license": "MIT",
+  "author": "Matthias Giger",
+  "scripts": {
+    "build": "padua build",
+    "start": "padua watch"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.64",
+    "padua": "^4.0.0"
+  },
+  "peerDependencies": {
+    "react": ">= 18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "trustedDependencies": [
+    "padua"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./index.tsx",
+  "exports": {
+    ".": {
+      "default": "./index.tsx"
+    }
+  },
+  "files": [
+    "index.tsx"
+  ],
+  "keywords": [
+    "scroll",
+    "overflow",
+    "fade"
+  ],
+  "prettier": "padua/configuration/.prettierrc.json",
+  "eslintConfig": {
+    "extends": "./node_modules/padua/configuration/eslint.cjs"
+  },
+  "publishConfig": {
+    "provenance": false
+  },
+  "engines": {
+    "node": ">= 18"
+  }
+}

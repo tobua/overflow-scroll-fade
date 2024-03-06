@@ -1,0 +1,30 @@
+name: push
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - name: 🛠️ Build Demo
+        run: |
+          cd demo
+          bun install
+          bunx papua build
+      - name: 🚀 Publish Demo
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: publish
+          folder: demo/dist
+      - name: 📢 Release
+        uses: tobua/release-npm-action@v3
+        with:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
