@@ -9,6 +9,7 @@ const wrapperStyles: CSSProperties = {
 const overflowStyles = (direction: 'horizontal' | 'vertical'): CSSProperties => ({
   display: 'flex',
   overflow: 'auto',
+  height: direction === 'vertical' ? '100%' : 'auto',
   scrollTimelineName: '--indicate-scroll-element',
   scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
 })

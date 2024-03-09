@@ -31,6 +31,12 @@ const Color = {
   boxes: ['#0075ff', '#ff002e', '#00ba6c', '#eb00ff', '#ffb800', '#09d3c7'],
 }
 
+const checkeredBackground = (color: string): CSSProperties => ({
+  backgroundImage: `linear-gradient(45deg, ${color} 25%, transparent 25%), linear-gradient(-45deg, ${color} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${color} 75%), linear-gradient(-45deg, transparent 75%, ${color} 75%)`,
+  backgroundSize: '20px 20px',
+  backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
+})
+
 const headingStyles = (as: 'h1' | 'h2' | 'h3'): CSSProperties => ({
   margin: 0,
   fontSize: as === 'h1' ? scale(36) : scale(24),
@@ -81,6 +87,8 @@ const boxStyles = (size: number, sizeFactor = 40): CSSProperties => {
     height: scale(size * sizeFactor),
     background: color,
     borderRadius: scale(10),
+    // TODO shouldn't be necessary.
+    flex: '0 0 auto',
   }
 }
 
@@ -156,6 +164,27 @@ const MyGrid = () => (
         <span>10</span>
         <span>Space between elements.</span>
       </div>
+      <Heading as="h2">Development Playground</Heading>
+      <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(20) }}>
+        <div
+          style={{
+            width: 1000,
+            height: 50,
+            ...checkeredBackground(Color.boxes[0]),
+            flex: '0 0 auto',
+          }}
+        />
+      </Scroll>
+      <Scroll direction="vertical" style={{ maxHeight: 100 }} overflowStyle={{ gap: scale(20) }}>
+        <div
+          style={{
+            width: 200,
+            height: 300,
+            ...checkeredBackground(Color.boxes[1]),
+            flex: '0 0 auto',
+          }}
+        />
+      </Scroll>
     </div>
   )
 }
