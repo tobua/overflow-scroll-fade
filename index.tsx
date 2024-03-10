@@ -14,7 +14,7 @@ const overflowStyles = (direction: 'horizontal' | 'vertical'): CSSProperties => 
   scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
 })
 
-const fadeStyles = (direction: Direction, horizontal: boolean): CSSProperties => ({
+const fadeStyles = (direction: Direction, horizontal: boolean, color: string): CSSProperties => ({
   display: 'flex',
   position: 'absolute',
   outline: 'none',
@@ -23,7 +23,7 @@ const fadeStyles = (direction: Direction, horizontal: boolean): CSSProperties =>
   padding: 0,
   height: horizontal ? '100%' : 20,
   width: horizontal ? 20 : '100%',
-  background: 'red',
+  background: `linear-gradient(to ${direction}, rgba(255, 255, 255, 0), ${color})`,
   animationTimeline: '--indicate-scroll-element',
   animationTimingFunction: 'linear',
   animationFillMode: 'forwards',
@@ -65,7 +65,15 @@ const scrollByDirection = {
   }),
 }
 
-function Fade({ direction, style }: { direction: Direction; style?: CSSProperties }) {
+function Fade({
+  direction,
+  style,
+  color,
+}: {
+  direction: Direction
+  style?: CSSProperties
+  color: string
+}) {
   const horizontal = direction === 'left' || direction === 'right'
 
   return (
@@ -73,7 +81,7 @@ function Fade({ direction, style }: { direction: Direction; style?: CSSPropertie
       aria-label={`Scroll to ${direction}`}
       type="button"
       style={{
-        ...fadeStyles(direction, horizontal),
+        ...fadeStyles(direction, horizontal, color),
         ...style,
       }}
       onClick={(event) => {
@@ -90,6 +98,7 @@ function Fade({ direction, style }: { direction: Direction; style?: CSSPropertie
 
 export function Scroll({
   direction = 'horizontal',
+  color = '#FFF',
   style,
   overflowStyle,
   indicatorStyle,
@@ -97,6 +106,7 @@ export function Scroll({
   ...props
 }: JSX.IntrinsicElements['div'] & {
   direction?: 'horizontal' | 'vertical'
+  color?: string
   overflowStyle?: CSSProperties
   indicatorStyle?: CSSProperties
 }) {
@@ -111,10 +121,16 @@ export function Scroll({
       >
         {children}
         <style>{keyframes}</style>
-        {direction === 'vertical' && <Fade style={indicatorStyle} direction="top" />}
-        {direction === 'horizontal' && <Fade style={indicatorStyle} direction="right" />}
-        {direction === 'vertical' && <Fade style={indicatorStyle} direction="bottom" />}
-        {direction === 'horizontal' && <Fade style={indicatorStyle} direction="left" />}
+        {direction === 'vertical' && <Fade style={indicatorStyle} color={color} direction="top" />}
+        {direction === 'horizontal' && (
+          <Fade style={indicatorStyle} color={color} direction="right" />
+        )}
+        {direction === 'vertical' && (
+          <Fade style={indicatorStyle} color={color} direction="bottom" />
+        )}
+        {direction === 'horizontal' && (
+          <Fade style={indicatorStyle} color={color} direction="left" />
+        )}
       </div>
     </div>
   )

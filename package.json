@@ -43,7 +43,10 @@
   ],
   "prettier": "padua/configuration/.prettierrc.json",
   "eslintConfig": {
-    "extends": "./node_modules/padua/configuration/eslint.cjs"
+    "extends": "./node_modules/padua/configuration/eslint.cjs",
+    "rules": {
+      "react/react-in-jsx-scope": 0
+    }
   },
   "publishConfig": {
     "provenance": false
