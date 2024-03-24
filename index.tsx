@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useRef, useState, useEffect, type CSSProperties } from 'react'
 
 type Direction = 'top' | 'right' | 'bottom' | 'left'
 
@@ -110,26 +110,46 @@ export function Scroll({
   overflowStyle?: CSSProperties
   indicatorStyle?: CSSProperties
 }) {
+  const [hasOverflow, setHasOverflow] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>()
+
+  useEffect(() => {
+    const element = scrollRef.current
+    if (element) {
+      if (direction === 'horizontal') {
+        setHasOverflow(element.scrollWidth > element.clientWidth)
+      } else {
+        setHasOverflow(element.scrollHeight > element.clientHeight)
+      }
+    }
+  }, [])
+
   return (
     <div {...props} style={{ ...wrapperStyles, ...style }}>
       <div
-        className="scroller"
+        ref={scrollRef}
         style={{
           ...overflowStyles(direction),
           ...overflowStyle,
         }}
       >
         {children}
-        <style>{keyframes}</style>
-        {direction === 'vertical' && <Fade style={indicatorStyle} color={color} direction="top" />}
-        {direction === 'horizontal' && (
-          <Fade style={indicatorStyle} color={color} direction="right" />
-        )}
-        {direction === 'vertical' && (
-          <Fade style={indicatorStyle} color={color} direction="bottom" />
-        )}
-        {direction === 'horizontal' && (
-          <Fade style={indicatorStyle} color={color} direction="left" />
+        {hasOverflow && (
+          <>
+            <style>{keyframes}</style>
+            {direction === 'vertical' && (
+              <Fade style={indicatorStyle} color={color} direction="top" />
+            )}
+            {direction === 'horizontal' && (
+              <Fade style={indicatorStyle} color={color} direction="right" />
+            )}
+            {direction === 'vertical' && (
+              <Fade style={indicatorStyle} color={color} direction="bottom" />
+            )}
+            {direction === 'horizontal' && (
+              <Fade style={indicatorStyle} color={color} direction="left" />
+            )}
+          </>
         )}
       </div>
     </div>

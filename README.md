@@ -6,10 +6,11 @@
 
 Add a gradient-based dynamic fade effect to elements with scrollable overflow.
 
-- React JSX based
-- Requires the [ScrollTimeline](https://caniuse.com/mdn-api_scrolltimeline) API
-  - Works in Chrome, Edge and Opera
-- Works with either horizontal or vertical overflow
+- ⚛️ React JSX based
+- 🔄 Works with either horizontal or vertical overflow
+- ❗ Requires the [ScrollTimeline](https://caniuse.com/mdn-api_scrolltimeline) API
+  - Currently works in Chrome, Edge and Opera
+- ⚠️ Published as TypeScript and JSX see [this post on 𝕏](https://twitter.com/matthiasgiger/status/1766443368567971946) for the reasoning
 
 > [!NOTE]  
 > This library is a much simpler successor to [indicate](https://github.com/tobua/indicate) which has less restrictions and more features but uses older and more performance intensive techniques.

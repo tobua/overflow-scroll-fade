@@ -135,7 +135,7 @@ const MyGrid = () => (
   </Fade>
 )`}</Code>
       <Heading as="h2">Examples</Heading>
-      <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(20) }}>
+      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
         <Box />
         <Box />
         <Box />
@@ -145,9 +145,9 @@ const MyGrid = () => (
       </Scroll>
       <Heading as="h3">Vertical</Heading>
       <Scroll
-        style={{ maxHeight: 200 }}
+        style={{ maxHeight: 160 }}
         direction="vertical"
-        overflowStyle={{ gap: scale(20), flexDirection: 'column' }}
+        overflowStyle={{ gap: scale(10), flexDirection: 'column' }}
       >
         <Box />
         <Box />
@@ -156,8 +156,11 @@ const MyGrid = () => (
         <Box />
         <Box />
       </Scroll>
-      <Heading as="h2">Configuration</Heading>
-      <Configuration />
+      <Heading as="h3">No overflow</Heading>
+      <Scroll style={{ alignSelf: 'flex-start' }} overflowStyle={{ gap: scale(10) }}>
+        <Box />
+        <Box />
+      </Scroll>
       <Heading as="h3">Color</Heading>
       <div
         style={{
@@ -168,7 +171,7 @@ const MyGrid = () => (
           maxWidth: 300,
         }}
       >
-        <Scroll style={{}} color="lightgray" overflowStyle={{ gap: scale(20) }}>
+        <Scroll style={{}} color="lightgray" overflowStyle={{ gap: scale(10) }}>
           <Box />
           <Box />
           <Box />
@@ -177,8 +180,10 @@ const MyGrid = () => (
           <Box />
         </Scroll>
       </div>
+      <Heading as="h2">Configuration</Heading>
+      <Configuration />
       <Heading as="h2">Development Playground</Heading>
-      <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(20) }}>
+      <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(10) }}>
         <div
           style={{
             width: 1000,

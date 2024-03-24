@@ -36,6 +36,22 @@ export function Configuration() {
       <Code>#FFF</Code>
       <Code>string</Code>
       <span>Color of the fade effect.</span>
+      <span>children</span>
+      <span>required</span>
+      <Code>ReactNode</Code>
+      <span>Contents that might potentially overflow their container.</span>
+      <span>style</span>
+      <span>empty</span>
+      <Code>CSSProperties</Code>
+      <span>Styles applied to the container.</span>
+      <span>overflowStyle</span>
+      <span>empty</span>
+      <Code>CSSProperties</Code>
+      <span>Styles applied to the scrollable element.</span>
+      <span>indicatorStyle</span>
+      <span>empty</span>
+      <Code>CSSProperties</Code>
+      <span>Styles added to the overflow indicators.</span>
     </div>
   )
 }
