@@ -1,12 +1,13 @@
-import { useRef, useState, useEffect, type CSSProperties } from 'react'
+import { useRef, useState, useEffect, type CSSProperties, SetStateAction, Dispatch } from 'react'
 
 type Direction = 'top' | 'right' | 'bottom' | 'left'
+type ScrollDirection = 'horizontal' | 'vertical'
 
 const wrapperStyles: CSSProperties = {
   position: 'relative',
 }
 
-const overflowStyles = (direction: 'horizontal' | 'vertical'): CSSProperties => ({
+const overflowStyles = (direction: ScrollDirection): CSSProperties => ({
   display: 'flex',
   overflow: 'auto',
   height: direction === 'vertical' ? '100%' : 'auto',
@@ -65,6 +66,41 @@ const scrollByDirection = {
   }),
 }
 
+function checkOverflow(
+  element: HTMLDivElement,
+  direction: ScrollDirection,
+  hasOverflow: boolean,
+  setHasOverflow: Dispatch<SetStateAction<boolean>>,
+) {
+  if (element) {
+    if (direction === 'horizontal') {
+      const nextState = element.scrollWidth > element.clientWidth
+      if (nextState !== hasOverflow) {
+        setHasOverflow(nextState)
+      }
+    } else {
+      const nextState = element.scrollHeight > element.clientHeight
+      if (nextState !== hasOverflow) {
+        setHasOverflow(nextState)
+      }
+    }
+  }
+}
+
+function getUserNodes(element: HTMLDivElement) {
+  let nodes = Array.from(element.childNodes) as Element[]
+
+  // Remove our absolutely positioned elements added to show overflow.
+  if (
+    nodes.at(-1).tagName === 'BUTTON' &&
+    nodes.at(-2).tagName === 'BUTTON' &&
+    nodes.at(-3).tagName === 'STYLE'
+  ) {
+    nodes = nodes.slice(0, -3)
+  }
+  return nodes
+}
+
 function Fade({
   direction,
   style,
@@ -105,7 +141,7 @@ export function Scroll({
   children,
   ...props
 }: JSX.IntrinsicElements['div'] & {
-  direction?: 'horizontal' | 'vertical'
+  direction?: ScrollDirection
   color?: string
   overflowStyle?: CSSProperties
   indicatorStyle?: CSSProperties
@@ -115,14 +151,24 @@ export function Scroll({
 
   useEffect(() => {
     const element = scrollRef.current
-    if (element) {
-      if (direction === 'horizontal') {
-        setHasOverflow(element.scrollWidth > element.clientWidth)
-      } else {
-        setHasOverflow(element.scrollHeight > element.clientHeight)
+    const userNodes = getUserNodes(element)
+
+    checkOverflow(element, direction, hasOverflow, setHasOverflow)
+
+    const resizeObserver = new ResizeObserver(() => {
+      checkOverflow(element, direction, hasOverflow, setHasOverflow)
+    })
+
+    if (userNodes.length) {
+      userNodes.forEach((node: Element) => resizeObserver.observe(node))
+    }
+
+    return () => {
+      if (element) {
+        resizeObserver.unobserve(element)
       }
     }
-  }, [])
+  }, [hasOverflow, children])
 
   return (
     <div {...props} style={{ ...wrapperStyles, ...style }}>

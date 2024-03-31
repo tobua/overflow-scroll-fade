@@ -1,4 +1,4 @@
-import { type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { createRoot } from 'react-dom/client'
 import { highlight } from 'sugar-high'
 import { scale } from 'optica'
@@ -88,8 +88,9 @@ const boxStyles = (size: number, sizeFactor = 40): CSSProperties => {
     height: scale(size * sizeFactor),
     background: color,
     borderRadius: scale(10),
-    // TODO shouldn't be necessary.
-    flex: '0 0 auto',
+    flex: '0 0 auto', // TODO shouldn't be necessary.
+    animation: 'fadeIn 300ms ease-in-out',
+    opacity: 1,
   }
 }
 
@@ -98,6 +99,18 @@ function Box({ size = 1 }) {
 }
 
 function App() {
+  const [frame, setFrame] = useState(0)
+
+  colorIndex = 0
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFrame((prevFrame) => prevFrame + 1)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div style={appStyles}>
       <style>{`.sh__line {
@@ -115,6 +128,15 @@ function App() {
   --sh-string: #00a99a;
   --sh-keyword: #f47067;
   --sh-comment: #a19595;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }`}</style>
       <img
         style={{ maxWidth: scale(400), width: '100%', alignSelf: 'center' }}
@@ -156,11 +178,6 @@ const MyGrid = () => (
         <Box />
         <Box />
       </Scroll>
-      <Heading as="h3">No overflow</Heading>
-      <Scroll style={{ alignSelf: 'flex-start' }} overflowStyle={{ gap: scale(10) }}>
-        <Box />
-        <Box />
-      </Scroll>
       <Heading as="h3">Color</Heading>
       <div
         style={{
@@ -180,6 +197,34 @@ const MyGrid = () => (
           <Box />
         </Scroll>
       </div>
+      <Heading as="h3">No overflow</Heading>
+      <Scroll style={{ alignSelf: 'flex-start' }} overflowStyle={{ gap: scale(10) }}>
+        <Box />
+        <Box />
+      </Scroll>
+      <Heading as="h3">Dynamic Content Size</Heading>
+      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
+        <Box />
+        <Box />
+        <div style={{ display: frame % 2 === 1 ? 'flex' : 'none', gap: scale(10) }}>
+          <Box />
+          <Box />
+          <Box />
+          <Box />
+        </div>
+      </Scroll>
+      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
+        <Box />
+        <Box />
+        {frame % 2 === 1 && (
+          <>
+            <Box />
+            <Box />
+            <Box />
+            <Box />
+          </>
+        )}
+      </Scroll>
       <Heading as="h2">Configuration</Heading>
       <Configuration />
       <Heading as="h2">Development Playground</Heading>
