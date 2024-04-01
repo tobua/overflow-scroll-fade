@@ -3,6 +3,8 @@ import { useRef, useState, useEffect, type CSSProperties, SetStateAction, Dispat
 type Direction = 'top' | 'right' | 'bottom' | 'left'
 type ScrollDirection = 'horizontal' | 'vertical'
 
+const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style
+
 const wrapperStyles: CSSProperties = {
   position: 'relative',
 }
@@ -148,6 +150,20 @@ export function Scroll({
 }) {
   const [hasOverflow, setHasOverflow] = useState(false)
   const scrollRef = useRef<HTMLDivElement>()
+
+  if (!supportsScrollTimeline) {
+    return (
+      <div
+        style={{
+          ...overflowStyles(direction),
+          ...overflowStyle,
+          ...style,
+        }}
+      >
+        {children}
+      </div>
+    )
+  }
 
   useEffect(() => {
     const element = scrollRef.current

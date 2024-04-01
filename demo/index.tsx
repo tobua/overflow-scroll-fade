@@ -52,9 +52,25 @@ function Heading({
   return <Component {...props} style={{ ...headingStyles(as), ...style }} />
 }
 
+const inlineCodeStyles: CSSProperties = {
+  background: Color.blue.ultralight,
+  borderRadius: scale(5),
+  paddingLeft: scale(4),
+  paddingRight: scale(4),
+  paddingBottom: 2,
+  paddingTop: 1,
+  fontSize: scale(14),
+  fontFamily: 'monospace',
+}
+
+function InlineCode({ style, ...props }: JSX.IntrinsicElements['span']) {
+  return <span {...props} style={{ ...inlineCodeStyles, ...style }} />
+}
+
 const paragraphStyles: CSSProperties = {
   margin: 0,
   fontSize: scale(18),
+  lineHeight: scale(24),
 }
 
 function Paragraph({ style, ...props }: JSX.IntrinsicElements['p']) {
@@ -63,17 +79,23 @@ function Paragraph({ style, ...props }: JSX.IntrinsicElements['p']) {
 
 function Code({ children }: { children: string }) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: scale(20),
-        background: Color.blue.ultralight,
-        borderRadius: scale(20),
-        fontFamily: 'monospace',
-      }}
-      dangerouslySetInnerHTML={{ __html: highlight(children) }}
-    />
+    <Scroll>
+      <div
+        style={{
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column',
+          padding: scale(20),
+          background: Color.blue.ultralight,
+          borderRadius: scale(20),
+          fontFamily: 'monospace',
+          whiteSpace: 'pre',
+          fontSize: scale(16),
+          lineHeight: scale(22),
+        }}
+        dangerouslySetInnerHTML={{ __html: highlight(children) }}
+      />
+    </Scroll>
   )
 }
 
@@ -114,8 +136,7 @@ function App() {
   return (
     <div style={appStyles}>
       <style>{`.sh__line {
-    display: block;
-    min-height: 20px;
+  min-height: ${scale(22)};
 }
 
 :root {
@@ -148,13 +169,13 @@ function App() {
         Add a gradient-based dynamic fade effect to elements with scrollable overflow.
       </Paragraph>
       <Heading as="h2">Usage</Heading>
-      <Code>{`import { Fade } from 'overflow-scroll-fade'
+      <Code>{`import { Scroll } from 'overflow-scroll-fade'
 
 const MyGrid = () => (
-  <Fade>
+  <Scroll>
     <p>overflow-scroll-fade</p>
     <p>overflow-scroll-fade</p>
-  </Fade>
+  </Scroll>
 )`}</Code>
       <Heading as="h2">Examples</Heading>
       <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
@@ -227,6 +248,37 @@ const MyGrid = () => (
       </Scroll>
       <Heading as="h2">Configuration</Heading>
       <Configuration />
+      <Heading as="h2">How does it work?</Heading>
+      <Paragraph>
+        In order to achieve this effect the plugin will add two wrapper elements around the
+        children. The outer one is a relatively positioned container that is used to position the
+        fades. The inner one holds the overflow and is scrollable. To avoid adding another wrapper
+        and because they need to reference the scroll element the fade elements are positioned on
+        the same level as the children. When there is no overflow no fade elements will be rendered.
+        In browsers where scroll-timeline isn't supported only the inner scroll element will be
+        rendered with the children inside. In this case when custom styles for{' '}
+        <InlineCode>style</InlineCode> or <InlineCode>overflowStyle</InlineCode> will be merged onto
+        the scroll element.
+      </Paragraph>
+      <Code>{`import { Scroll } from 'overflow-scroll-fade'
+
+const MyGrid = (
+  <Scroll>
+    <p>first-child</p>
+    <p>second-child</p>
+  </Scroll>
+)
+
+const ResultingStructure = () => (
+  <div style={{ position: 'relative' }}>
+    <div>
+      <p>first-child</p>
+      <p>second-child</p>
+      <button aria-label="Scroll to left" style={{ position: 'absolute', left: 0 }} />
+      <button aria-label="Scroll to right" style={{ position: 'absolute', right: 0 }} />
+    </div>
+  </div>
+)`}</Code>
       <Heading as="h2">Development Playground</Heading>
       <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(10) }}>
         <div
