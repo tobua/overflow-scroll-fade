@@ -52,6 +52,10 @@ export function Configuration() {
       <span>empty</span>
       <Code>CSSProperties</Code>
       <span>Styles added to the overflow indicators.</span>
+      <span>fallbackStyle</span>
+      <span>empty</span>
+      <Code>CSSProperties</Code>
+      <span>Styles added to the container when scroll timeline isn't supported.</span>
     </div>
   )
 }

@@ -1,7 +1,22 @@
-import { useRef, useState, useEffect, type CSSProperties, SetStateAction, Dispatch } from 'react'
+import {
+  useRef,
+  useState,
+  useEffect,
+  type CSSProperties,
+  SetStateAction,
+  Dispatch,
+  ReactNode,
+} from 'react'
+import { FadeDirection, ScrollDirection } from './types'
+import { Arrow, ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
 
-type Direction = 'top' | 'right' | 'bottom' | 'left'
-type ScrollDirection = 'horizontal' | 'vertical'
+type Props = JSX.IntrinsicElements['div'] & {
+  direction?: ScrollDirection
+  color?: string
+  overflowStyle?: CSSProperties
+  indicatorStyle?: CSSProperties
+  fallbackStyle?: CSSProperties
+}
 
 const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style
 
@@ -17,7 +32,11 @@ const overflowStyles = (direction: ScrollDirection): CSSProperties => ({
   scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
 })
 
-const fadeStyles = (direction: Direction, horizontal: boolean, color: string): CSSProperties => ({
+const fadeStyles = (
+  direction: FadeDirection,
+  horizontal: boolean,
+  color: string,
+): CSSProperties => ({
   display: 'flex',
   position: 'absolute',
   outline: 'none',
@@ -36,23 +55,24 @@ const fadeStyles = (direction: Direction, horizontal: boolean, color: string): C
   top: direction === 'top' ? 0 : 'auto',
   bottom: direction === 'bottom' ? 0 : 'auto',
   opacity: direction === 'left' || direction === 'top' ? 0 : 1,
+  visibility: direction === 'left' || direction === 'top' ? 'hidden' : 'visible',
 })
 
 const keyframes = `@keyframes indicate-top {
-  20% { opacity: 1; }
-  100% { opacity: 1; }
+  20% { opacity: 1; visibility: visible; }
+  100% { opacity: 1; visibility: visible; }
 }
 @keyframes indicate-right {
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  80% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
 }
 @keyframes indicate-bottom {
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  80% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
 }
 @keyframes indicate-left {
-  20% { opacity: 1; }
-  100% { opacity: 1; }
+  20% { opacity: 1; visibility: visible; }
+  100% { opacity: 1; visibility: visible; }
 }`
 
 const scrollByDirection = {
@@ -103,16 +123,42 @@ function getUserNodes(element: HTMLDivElement) {
   return nodes
 }
 
+function Fallback({
+  children,
+  overflowStyle,
+  style,
+  fallbackStyle,
+}: {
+  children: ReactNode
+  style: CSSProperties
+  overflowStyle: CSSProperties
+  fallbackStyle: CSSProperties
+}) {
+  const styles = { display: 'flex', overflow: 'auto' }
+
+  if (fallbackStyle) {
+    Object.assign(styles, fallbackStyle)
+  } else {
+    Object.assign(styles, overflowStyle)
+    Object.assign(styles, style)
+  }
+
+  return <div style={styles}>{children}</div>
+}
+
 function Fade({
   direction,
   style,
   color,
+  arrow,
 }: {
-  direction: Direction
+  direction: FadeDirection
   style?: CSSProperties
   color: string
+  arrow: ArrowProps | true
 }) {
   const horizontal = direction === 'left' || direction === 'right'
+  const arrowConfiguration = typeof arrow === 'object' ? arrow : defaultArrowProps
 
   return (
     <button
@@ -121,6 +167,8 @@ function Fade({
       style={{
         ...fadeStyles(direction, horizontal, color),
         ...style,
+        alignItems: getArrowPosition(arrowConfiguration),
+        justifyContent: getArrowPosition(arrowConfiguration),
       }}
       onClick={(event) => {
         const element = event.target as HTMLButtonElement
@@ -130,7 +178,9 @@ function Fade({
           ...scrollByDirection[direction](container),
         })
       }}
-    />
+    >
+      {arrow && <Arrow direction={direction} {...arrowConfiguration} />}
+    </button>
   )
 }
 
@@ -140,28 +190,19 @@ export function Scroll({
   style,
   overflowStyle,
   indicatorStyle,
+  fallbackStyle,
   children,
+  arrow,
   ...props
-}: JSX.IntrinsicElements['div'] & {
-  direction?: ScrollDirection
-  color?: string
-  overflowStyle?: CSSProperties
-  indicatorStyle?: CSSProperties
-}) {
+}: Props & { arrow?: ArrowProps | true }) {
   const [hasOverflow, setHasOverflow] = useState(false)
   const scrollRef = useRef<HTMLDivElement>()
 
   if (!supportsScrollTimeline) {
     return (
-      <div
-        style={{
-          ...overflowStyles(direction),
-          ...overflowStyle,
-          ...style,
-        }}
-      >
+      <Fallback style={style} overflowStyle={overflowStyle} fallbackStyle={fallbackStyle}>
         {children}
-      </div>
+      </Fallback>
     )
   }
 
@@ -200,16 +241,16 @@ export function Scroll({
           <>
             <style>{keyframes}</style>
             {direction === 'vertical' && (
-              <Fade style={indicatorStyle} color={color} direction="top" />
+              <Fade style={indicatorStyle} color={color} direction="top" arrow={arrow} />
             )}
             {direction === 'horizontal' && (
-              <Fade style={indicatorStyle} color={color} direction="right" />
+              <Fade style={indicatorStyle} color={color} direction="right" arrow={arrow} />
             )}
             {direction === 'vertical' && (
-              <Fade style={indicatorStyle} color={color} direction="bottom" />
+              <Fade style={indicatorStyle} color={color} direction="bottom" arrow={arrow} />
             )}
             {direction === 'horizontal' && (
-              <Fade style={indicatorStyle} color={color} direction="left" />
+              <Fade style={indicatorStyle} color={color} direction="left" arrow={arrow} />
             )}
           </>
         )}

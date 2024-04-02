@@ -11,7 +11,7 @@
     "start": "padua watch"
   },
   "devDependencies": {
-    "@types/react": "^18.2.73",
+    "@types/react": "^18.2.74",
     "padua": "^4.0.1"
   },
   "peerDependencies": {

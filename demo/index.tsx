@@ -209,7 +209,7 @@ const MyGrid = () => (
           maxWidth: 300,
         }}
       >
-        <Scroll style={{}} color="lightgray" overflowStyle={{ gap: scale(10) }}>
+        <Scroll color="lightgray" overflowStyle={{ gap: scale(10) }}>
           <Box />
           <Box />
           <Box />
@@ -217,6 +217,37 @@ const MyGrid = () => (
           <Box />
           <Box />
         </Scroll>
+      </div>
+      <Heading as="h3">Arrow</Heading>
+      <div style={{ display: 'flex', gap: scale(20), flexWrap: 'wrap' }}>
+        <Scroll style={{ maxWidth: 180 }} arrow={true} overflowStyle={{ gap: scale(10) }}>
+          <Box />
+          <Box />
+          <Box />
+          <Box />
+          <Box />
+          <Box />
+        </Scroll>
+        <div
+          style={{
+            background: 'lightgray',
+            overflow: 'hidden',
+            maxWidth: 180,
+          }}
+        >
+          <Scroll
+            color="lightgray"
+            arrow={{ position: 'start', icon: 'pointer-rounded', color: 'white' }}
+            overflowStyle={{ gap: scale(10) }}
+          >
+            <Box />
+            <Box />
+            <Box />
+            <Box />
+            <Box />
+            <Box />
+          </Scroll>
+        </div>
       </div>
       <Heading as="h3">No overflow</Heading>
       <Scroll style={{ alignSelf: 'flex-start' }} overflowStyle={{ gap: scale(10) }}>
