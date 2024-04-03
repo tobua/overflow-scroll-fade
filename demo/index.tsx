@@ -1,8 +1,8 @@
-import { useEffect, useState, type CSSProperties } from 'react'
-import { createRoot } from 'react-dom/client'
-import { highlight } from 'sugar-high'
 import { scale } from 'optica'
 import { Scroll } from 'overflow-scroll-fade'
+import { type CSSProperties, useEffect, useState } from 'react'
+import { createRoot } from 'react-dom/client'
+import { highlight } from 'sugar-high'
 import { Configuration } from './Configuration'
 import logo from './logo.png'
 
@@ -43,11 +43,7 @@ const headingStyles = (as: 'h1' | 'h2' | 'h3'): CSSProperties => ({
   fontSize: as === 'h1' ? scale(36) : scale(24),
 })
 
-function Heading({
-  as = 'h1',
-  style,
-  ...props
-}: JSX.IntrinsicElements['h1' | 'h2' | 'h3'] & { as?: 'h1' | 'h2' | 'h3' }) {
+function Heading({ as = 'h1', style, ...props }: JSX.IntrinsicElements['h1' | 'h2' | 'h3'] & { as?: 'h1' | 'h2' | 'h3' }) {
   const Component = as
   return <Component {...props} style={{ ...headingStyles(as), ...style }} />
 }
@@ -120,7 +116,7 @@ function Box({ size = 1 }) {
   return <div style={boxStyles(size)} />
 }
 
-function App() {
+function DynamicContent({ children }) {
   const [frame, setFrame] = useState(0)
 
   colorIndex = 0
@@ -132,6 +128,12 @@ function App() {
 
     return () => clearInterval(interval)
   }, [])
+
+  return children(frame)
+}
+
+function App() {
+  colorIndex = 0
 
   return (
     <div style={appStyles}>
@@ -159,15 +161,9 @@ function App() {
     opacity: 1;
   }
 }`}</style>
-      <img
-        style={{ maxWidth: scale(400), width: '100%', alignSelf: 'center' }}
-        src={logo}
-        alt="masua Logo"
-      />
+      <img style={{ maxWidth: scale(400), width: '100%', alignSelf: 'center' }} src={logo} alt="masua Logo" />
       <Heading>overflow-scroll-fade</Heading>
-      <Paragraph>
-        Add a gradient-based dynamic fade effect to elements with scrollable overflow.
-      </Paragraph>
+      <Paragraph>Add a gradient-based dynamic fade effect to elements with scrollable overflow.</Paragraph>
       <Heading as="h2">Usage</Heading>
       <Code>{`import { Scroll } from 'overflow-scroll-fade'
 
@@ -187,11 +183,7 @@ const MyGrid = () => (
         <Box />
       </Scroll>
       <Heading as="h3">Vertical</Heading>
-      <Scroll
-        style={{ maxHeight: 160 }}
-        direction="vertical"
-        overflowStyle={{ gap: scale(10), flexDirection: 'column' }}
-      >
+      <Scroll as="main" style={{ maxHeight: 160 }} direction="vertical" overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
         <Box />
         <Box />
         <Box />
@@ -256,40 +248,69 @@ const MyGrid = () => (
       </Scroll>
       <Heading as="h3">Dynamic Content Size</Heading>
       <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
-        <Box />
-        <Box />
-        <div style={{ display: frame % 2 === 1 ? 'flex' : 'none', gap: scale(10) }}>
-          <Box />
-          <Box />
-          <Box />
-          <Box />
-        </div>
+        <DynamicContent>
+          {(frame: number) => (
+            <>
+              <Box />
+              <Box />
+              <div style={{ display: frame % 2 === 1 ? 'flex' : 'none', gap: scale(10) }}>
+                <Box />
+                <Box />
+                <Box />
+                <Box />
+              </div>
+            </>
+          )}
+        </DynamicContent>
       </Scroll>
       <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
-        <Box />
-        <Box />
-        {frame % 2 === 1 && (
-          <>
-            <Box />
-            <Box />
-            <Box />
-            <Box />
-          </>
-        )}
+        <DynamicContent>
+          {(frame: number) => (
+            <>
+              <Box />
+              <Box />
+              {frame % 2 === 1 && (
+                <>
+                  <Box />
+                  <Box />
+                  <Box />
+                  <Box />
+                </>
+              )}
+            </>
+          )}
+        </DynamicContent>
+      </Scroll>
+      <Scroll style={{ maxWidth: 360 }}>
+        <DynamicContent>
+          {(frame: number) => (
+            <div style={{ display: 'flex', gap: scale(10) }}>
+              <Box />
+              <Box />
+              <div style={{ display: 'flex', gap: scale(10) }}>
+                {frame % 2 === 1 && (
+                  <>
+                    <Box />
+                    <Box />
+                    <Box />
+                    <Box />
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </DynamicContent>
       </Scroll>
       <Heading as="h2">Configuration</Heading>
       <Configuration />
       <Heading as="h2">How does it work?</Heading>
       <Paragraph>
-        In order to achieve this effect the plugin will add two wrapper elements around the
-        children. The outer one is a relatively positioned container that is used to position the
-        fades. The inner one holds the overflow and is scrollable. To avoid adding another wrapper
-        and because they need to reference the scroll element the fade elements are positioned on
-        the same level as the children. When there is no overflow no fade elements will be rendered.
-        In browsers where scroll-timeline isn't supported only the inner scroll element will be
-        rendered with the children inside. In this case when custom styles for{' '}
-        <InlineCode>style</InlineCode> or <InlineCode>overflowStyle</InlineCode> will be merged onto
-        the scroll element.
+        In order to achieve this effect the plugin will add two wrapper elements around the children. The outer one is a relatively
+        positioned container that is used to position the fades. The inner one holds the overflow and is scrollable. To avoid adding another
+        wrapper and because they need to reference the scroll element the fade elements are positioned on the same level as the children.
+        When there is no overflow no fade elements will be rendered. In browsers where scroll-timeline isn't supported only the inner scroll
+        element will be rendered with the children inside. In this case when custom styles for <InlineCode>style</InlineCode> or{' '}
+        <InlineCode>overflowStyle</InlineCode> will be merged onto the scroll element.
       </Paragraph>
       <Code>{`import { Scroll } from 'overflow-scroll-fade'
 

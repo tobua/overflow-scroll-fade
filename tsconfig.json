@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"lib": ["DOM"],
+		"module": "Preserve",
+		"jsx": "react-jsx"
+	},
+	"files": ["index.tsx"]
+}

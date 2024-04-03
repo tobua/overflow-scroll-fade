@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react'
 import { scale } from 'optica'
+import type { CSSProperties } from 'react'
 import { Color } from './style'
 
 const wrapperStyles: CSSProperties = {
@@ -56,6 +56,14 @@ export function Configuration() {
       <span>empty</span>
       <Code>CSSProperties</Code>
       <span>Styles added to the container when scroll timeline isn't supported.</span>
+      <span>as</span>
+      <Code>'div'</Code>
+      <Code>ElementType</Code>
+      <span>Tag used for the container.</span>
+      <span>...props</span>
+      <span>empty</span>
+      <Code>JSX.IntrinsicElements['div']</Code>
+      <span>Arbitrary props passed on to the container.</span>
     </div>
   )
 }

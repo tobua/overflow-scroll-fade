@@ -7,24 +7,24 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "build": "padua build",
-    "start": "padua watch"
+    "format": "bun biome format . --write",
+    "lint": "bun biome lint .",
+    "types": "tsc --noEmit"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.6.4",
     "@types/react": "^18.2.74",
-    "padua": "^4.0.1"
+    "typescript": "^5.4.3"
   },
   "peerDependencies": {
-    "react": ">= 18"
+    "react": ">= 18",
+    "typescript": ">= 5"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     }
   },
-  "trustedDependencies": [
-    "padua"
-  ],
   "type": "module",
   "sideEffects": false,
   "main": "./index.tsx",
@@ -42,13 +42,6 @@
     "overflow",
     "fade"
   ],
-  "prettier": "padua/configuration/.prettierrc.json",
-  "eslintConfig": {
-    "extends": "./node_modules/padua/configuration/eslint.cjs",
-    "rules": {
-      "react/react-in-jsx-scope": 0
-    }
-  },
   "publishConfig": {
     "provenance": true
   },

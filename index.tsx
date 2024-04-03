@@ -1,22 +1,6 @@
-import {
-  useRef,
-  useState,
-  useEffect,
-  type CSSProperties,
-  SetStateAction,
-  Dispatch,
-  ReactNode,
-} from 'react'
-import { FadeDirection, ScrollDirection } from './types'
-import { Arrow, ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
-
-type Props = JSX.IntrinsicElements['div'] & {
-  direction?: ScrollDirection
-  color?: string
-  overflowStyle?: CSSProperties
-  indicatorStyle?: CSSProperties
-  fallbackStyle?: CSSProperties
-}
+import { type CSSProperties, type Dispatch, type JSX, type SetStateAction, useEffect, useRef, useState } from 'react'
+import { Arrow, type ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
+import type { FadeDirection, Props, ScrollDirection } from './types'
 
 const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style
 
@@ -32,11 +16,7 @@ const overflowStyles = (direction: ScrollDirection): CSSProperties => ({
   scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
 })
 
-const fadeStyles = (
-  direction: FadeDirection,
-  horizontal: boolean,
-  color: string,
-): CSSProperties => ({
+const fadeStyles = (direction: FadeDirection, horizontal: boolean, color: string): CSSProperties => ({
   display: 'flex',
   position: 'absolute',
   outline: 'none',
@@ -76,7 +56,9 @@ const keyframes = `@keyframes indicate-top {
 }`
 
 const scrollByDirection = {
-  top: (container: HTMLDivElement) => ({ top: container.scrollTop - container.scrollHeight * 0.2 }),
+  top: (container: HTMLDivElement) => ({
+    top: container.scrollTop - container.scrollHeight * 0.2,
+  }),
   right: (container: HTMLDivElement) => ({
     left: container.scrollLeft + container.scrollWidth * 0.2,
   }),
@@ -113,27 +95,22 @@ function getUserNodes(element: HTMLDivElement) {
   let nodes = Array.from(element.childNodes) as Element[]
 
   // Remove our absolutely positioned elements added to show overflow.
-  if (
-    nodes.at(-1).tagName === 'BUTTON' &&
-    nodes.at(-2).tagName === 'BUTTON' &&
-    nodes.at(-3).tagName === 'STYLE'
-  ) {
+  if (nodes.at(-1)?.tagName === 'BUTTON' && nodes.at(-2)?.tagName === 'BUTTON' && nodes.at(-3)?.tagName === 'STYLE') {
     nodes = nodes.slice(0, -3)
   }
+
   return nodes
 }
 
-function Fallback({
+function Fallback<T extends keyof JSX.IntrinsicElements = 'div'>({
   children,
   overflowStyle,
   style,
   fallbackStyle,
-}: {
-  children: ReactNode
-  style: CSSProperties
-  overflowStyle: CSSProperties
-  fallbackStyle: CSSProperties
-}) {
+  // biome-ignore lint/style/useNamingConvention: Requires case to be used as React component.
+  as: Component = 'div' as T,
+  ...props
+}: Props<T>) {
   const styles = { display: 'flex', overflow: 'auto' }
 
   if (fallbackStyle) {
@@ -143,7 +120,12 @@ function Fallback({
     Object.assign(styles, style)
   }
 
-  return <div style={styles}>{children}</div>
+  return (
+    // @ts-ignore only types from 'div' inferred for some reason.
+    <Component style={styles} {...props}>
+      {children}
+    </Component>
+  )
 }
 
 function Fade({
@@ -155,7 +137,7 @@ function Fade({
   direction: FadeDirection
   style?: CSSProperties
   color: string
-  arrow: ArrowProps | true
+  arrow: ArrowProps | boolean
 }) {
   const horizontal = direction === 'left' || direction === 'right'
   const arrowConfiguration = typeof arrow === 'object' ? arrow : defaultArrowProps
@@ -184,30 +166,27 @@ function Fade({
   )
 }
 
-export function Scroll({
+export function Scroll<T extends keyof JSX.IntrinsicElements = 'div'>({
   direction = 'horizontal',
   color = '#FFF',
-  style,
-  overflowStyle,
-  indicatorStyle,
+  style = {},
+  overflowStyle = {},
+  indicatorStyle = {},
   fallbackStyle,
   children,
-  arrow,
+  arrow = false,
+  // biome-ignore lint/style/useNamingConvention: Requires case to be used as React component.
+  as: Component = 'div' as T,
   ...props
-}: Props & { arrow?: ArrowProps | true }) {
+}: Props<T>) {
   const [hasOverflow, setHasOverflow] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>()
-
-  if (!supportsScrollTimeline) {
-    return (
-      <Fallback style={style} overflowStyle={overflowStyle} fallbackStyle={fallbackStyle}>
-        {children}
-      </Fallback>
-    )
-  }
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const element = scrollRef.current
+    if (!(supportsScrollTimeline && element)) {
+      return
+    }
     const userNodes = getUserNodes(element)
 
     checkOverflow(element, direction, hasOverflow, setHasOverflow)
@@ -216,8 +195,18 @@ export function Scroll({
       checkOverflow(element, direction, hasOverflow, setHasOverflow)
     })
 
+    const observer = new MutationObserver(() => {
+      checkOverflow(element, direction, hasOverflow, setHasOverflow)
+    })
+
+    // Observe if more children are rendered.
+    observer.observe(element, { childList: true, subtree: true })
+
+    // Observe if any of the children change their size.
     if (userNodes.length) {
-      userNodes.forEach((node: Element) => resizeObserver.observe(node))
+      for (const node of userNodes) {
+        resizeObserver.observe(node)
+      }
     }
 
     return () => {
@@ -225,10 +214,19 @@ export function Scroll({
         resizeObserver.unobserve(element)
       }
     }
-  }, [hasOverflow, children])
+  }, [hasOverflow, direction])
+
+  if (!supportsScrollTimeline) {
+    return (
+      <Fallback style={style} overflowStyle={overflowStyle} fallbackStyle={fallbackStyle} as={Component} {...props}>
+        {children}
+      </Fallback>
+    )
+  }
 
   return (
-    <div {...props} style={{ ...wrapperStyles, ...style }}>
+    // @ts-ignore only types from 'div' inferred for some reason.
+    <Component {...props} style={{ ...wrapperStyles, ...style }}>
       <div
         ref={scrollRef}
         style={{
@@ -240,21 +238,13 @@ export function Scroll({
         {hasOverflow && (
           <>
             <style>{keyframes}</style>
-            {direction === 'vertical' && (
-              <Fade style={indicatorStyle} color={color} direction="top" arrow={arrow} />
-            )}
-            {direction === 'horizontal' && (
-              <Fade style={indicatorStyle} color={color} direction="right" arrow={arrow} />
-            )}
-            {direction === 'vertical' && (
-              <Fade style={indicatorStyle} color={color} direction="bottom" arrow={arrow} />
-            )}
-            {direction === 'horizontal' && (
-              <Fade style={indicatorStyle} color={color} direction="left" arrow={arrow} />
-            )}
+            {direction === 'vertical' && <Fade style={indicatorStyle} color={color} direction="top" arrow={arrow} />}
+            {direction === 'horizontal' && <Fade style={indicatorStyle} color={color} direction="right" arrow={arrow} />}
+            {direction === 'vertical' && <Fade style={indicatorStyle} color={color} direction="bottom" arrow={arrow} />}
+            {direction === 'horizontal' && <Fade style={indicatorStyle} color={color} direction="left" arrow={arrow} />}
           </>
         )}
       </div>
-    </div>
+    </Component>
   )
 }
