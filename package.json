@@ -34,7 +34,8 @@
     }
   },
   "files": [
-    "index.tsx"
+    "*.ts",
+    "*.tsx"
   ],
   "keywords": [
     "scroll",
@@ -49,7 +50,7 @@
     }
   },
   "publishConfig": {
-    "provenance": false
+    "provenance": true
   },
   "engines": {
     "node": ">= 18"
