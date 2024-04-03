@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"strict": true,
-		"lib": ["DOM"],
+		"lib": ["DOM", "ESNext"],
 		"module": "Preserve",
 		"jsx": "react-jsx"
 	},
