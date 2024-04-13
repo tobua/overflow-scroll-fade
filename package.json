@@ -7,14 +7,14 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "format": "bun biome format . --write",
-    "lint": "bun biome lint .",
-    "types": "tsc --noEmit"
+    "format": "bun --bun biome format . --write",
+    "lint": "bun --bun biome lint .",
+    "types": "bun --bun tsc --noEmit"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
-    "@types/react": "^18.2.74",
-    "typescript": "^5.4.3"
+    "@types/react": "^18.2.78",
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
     "react": ">= 18",

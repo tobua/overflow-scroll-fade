@@ -3,7 +3,7 @@ import { Scroll } from 'overflow-scroll-fade'
 import { type CSSProperties, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { highlight } from 'sugar-high'
-import { Configuration } from './Configuration'
+import { ArrowConfiguration, Configuration } from './Configuration'
 import logo from './logo.png'
 
 document.body.style.display = 'flex'
@@ -303,6 +303,8 @@ const MyGrid = () => (
       </Scroll>
       <Heading as="h2">Configuration</Heading>
       <Configuration />
+      <Heading as="h3">Arrow Configuration</Heading>
+      <ArrowConfiguration />
       <Heading as="h2">How does it work?</Heading>
       <Paragraph>
         In order to achieve this effect the plugin will add two wrapper elements around the children. The outer one is a relatively

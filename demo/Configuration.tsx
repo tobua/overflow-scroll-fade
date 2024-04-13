@@ -36,6 +36,10 @@ export function Configuration() {
       <Code>#FFF</Code>
       <Code>string</Code>
       <span>Color of the fade effect.</span>
+      <span>arrow</span>
+      <Code>false</Code>
+      <Code>{`boolean | {}`}</Code>
+      <span>Enable the arrow, see detailed configuration below.</span>
       <span>children</span>
       <span>required</span>
       <Code>ReactNode</Code>
@@ -64,6 +68,29 @@ export function Configuration() {
       <span>empty</span>
       <Code>JSX.IntrinsicElements['div']</Code>
       <span>Arbitrary props passed on to the container.</span>
+    </div>
+  )
+}
+
+export function ArrowConfiguration() {
+  return (
+    <div style={wrapperStyles}>
+      <Header>Property</Header>
+      <Header>Default value</Header>
+      <Header>Type</Header>
+      <Header>Description</Header>
+      <span>position</span>
+      <Code>'center'</Code>
+      <Code>'center' | 'end' | 'start'</Code>
+      <span>Position of the arrow on the fade.</span>
+      <span>icon</span>
+      <Code>'arrow-rounded'</Code>
+      <Code>'arrow-rounded' | 'pointer-rounded' | 'arrow' | 'pointer'</Code>
+      <span>SVG icon to use for the arrow.</span>
+      <span>color</span>
+      <Code>'#000000'</Code>
+      <Code>string</Code>
+      <span>Color used for the arrow.</span>
     </div>
   )
 }
