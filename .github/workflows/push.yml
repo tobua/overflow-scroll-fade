@@ -19,8 +19,7 @@ jobs:
       - name: 🛠️ Build Demo
         run: |
           cd demo
-          bun install
-          bunx papua build
+          bun rsbuild build
       - name: 🚀 Publish Demo
         uses: JamesIves/github-pages-deploy-action@v4
         with:
