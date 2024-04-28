@@ -7,14 +7,18 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "format": "bun --bun biome format . --write",
-    "lint": "bun --bun biome lint .",
-    "types": "bun --bun tsc --noEmit"
+    "format": "bun biome format . --write",
+    "lint": "bun biome lint .",
+    "types": "tsc"
   },
+  "workspaces": [
+    "demo"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.6.4",
     "@types/react": "^18.2.78",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zero-configuration": "^0.5.5"
   },
   "peerDependencies": {
     "react": ">= 18",
@@ -25,6 +29,9 @@
       "optional": true
     }
   },
+  "trustedDependencies": [
+    "zero-configuration"
+  ],
   "type": "module",
   "sideEffects": false,
   "main": "./index.tsx",
@@ -45,7 +52,32 @@
   "publishConfig": {
     "provenance": true
   },
-  "engines": {
-    "node": ">= 18"
+  "configuration": {
+    "gitignore": "recommended",
+    "vscode": "biome",
+    "typescript": {
+      "extends": "plugin",
+      "compilerOptions": {
+        "jsx": "react-jsx"
+      },
+      "files": [
+        "index.tsx"
+      ]
+    },
+    "biome": {
+      "extends": "recommended",
+      "linter": {
+        "rules": {
+          "nursery": {
+            "all": true
+          }
+        }
+      },
+      "files": {
+        "ignore": [
+          "demo"
+        ]
+      }
+    }
   }
 }

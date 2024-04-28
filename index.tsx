@@ -107,7 +107,6 @@ function Fallback<T extends keyof JSX.IntrinsicElements = 'div'>({
   overflowStyle,
   style,
   fallbackStyle,
-  // biome-ignore lint/style/useNamingConvention: Requires case to be used as React component.
   as: Component = 'div' as T,
   ...props
 }: Props<T>) {
@@ -175,7 +174,6 @@ export function Scroll<T extends keyof JSX.IntrinsicElements = 'div'>({
   fallbackStyle,
   children,
   arrow = false,
-  // biome-ignore lint/style/useNamingConvention: Requires case to be used as React component.
   as: Component = 'div' as T,
   ...props
 }: Props<T>) {

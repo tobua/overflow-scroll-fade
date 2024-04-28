@@ -1,10 +1,11 @@
 import { scale } from 'optica'
 import { Scroll } from 'overflow-scroll-fade'
-import { type CSSProperties, useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState, type JSX } from 'react'
 import { createRoot } from 'react-dom/client'
 import { highlight } from 'sugar-high'
-import { ArrowConfiguration, Configuration } from './Configuration'
-import logo from './logo.png'
+import { ArrowConfiguration, Configuration } from './ConfigurationTable'
+import logo from '../logo.png'
+import './types' // Declarations for png image.
 
 document.body.style.display = 'flex'
 document.body.style.justifyContent = 'center'
@@ -89,6 +90,7 @@ function Code({ children }: { children: string }) {
           fontSize: scale(16),
           lineHeight: scale(22),
         }}
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: Safe, as generated from static code on the client.
         dangerouslySetInnerHTML={{ __html: highlight(children) }}
       />
     </Scroll>

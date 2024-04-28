@@ -38,7 +38,7 @@ export function Configuration() {
       <span>Color of the fade effect.</span>
       <span>arrow</span>
       <Code>false</Code>
-      <Code>{`boolean | {}`}</Code>
+      <Code>{'boolean | {}'}</Code>
       <span>Enable the arrow, see detailed configuration below.</span>
       <span>children</span>
       <span>required</span>
