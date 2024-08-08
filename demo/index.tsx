@@ -1,10 +1,10 @@
 import { scale } from 'optica'
 import { Scroll } from 'overflow-scroll-fade'
-import { type CSSProperties, useEffect, useState, type JSX } from 'react'
+import { type CSSProperties, type JSX, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { highlight } from 'sugar-high'
-import { ArrowConfiguration, Configuration } from './ConfigurationTable'
 import logo from '../logo.png'
+import { ArrowConfiguration, Configuration } from './ConfigurationTable'
 import './types' // Declarations for png image.
 
 document.body.style.display = 'flex'
@@ -132,6 +132,67 @@ function DynamicContent({ children }) {
   }, [])
 
   return children(frame)
+}
+
+function animateHeight() {
+  const element = document.getElementById('animated-box')
+  const startHeight = element.offsetHeight
+  let startTime = null
+  const increase = startHeight < 200
+  const duration = 3000
+  const targetHeight = increase ? 250 : 50
+
+  function step(timestamp: DOMHighResTimeStamp) {
+    if (!startTime) {
+      startTime = timestamp
+    }
+    const progress = timestamp - startTime
+
+    if (increase) {
+      const nextHeight = startHeight + (targetHeight - startHeight) * (progress / duration)
+
+      if (nextHeight > targetHeight) {
+        return
+      }
+      element.style.height = `${Math.min(nextHeight, targetHeight)}px`
+    } else {
+      const nextHeight = startHeight - (startHeight - targetHeight) * (progress / duration)
+      if (nextHeight < targetHeight) {
+        return
+      }
+      element.style.height = `${Math.max(nextHeight, targetHeight)}px`
+    }
+
+    if (progress < duration) {
+      requestAnimationFrame(step)
+    }
+  }
+
+  requestAnimationFrame(step)
+}
+
+const buttonStyles: CSSProperties = {
+  display: 'flex',
+  background: Color.boxes[1],
+  borderRadius: scale(10),
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  border: 'none',
+  outline: 'none',
+  color: 'white',
+  cursor: 'pointer',
+}
+
+function AddMoreContent() {
+  return (
+    <>
+      <button type="button" onClick={() => animateHeight()} style={buttonStyles}>
+        Add More
+      </button>
+      <div id="animated-box" style={boxStyles(1)} />
+    </>
+  )
 }
 
 function App() {
@@ -302,6 +363,14 @@ const MyGrid = () => (
             </div>
           )}
         </DynamicContent>
+      </Scroll>
+      <Heading as="h3">Dynamic Vertical Content Size</Heading>
+      <Scroll
+        style={{ height: 200 }}
+        direction="vertical"
+        overflowStyle={{ gap: scale(10), flexDirection: 'column' }}
+      >
+        <AddMoreContent />
       </Scroll>
       <Heading as="h2">Configuration</Heading>
       <Configuration />

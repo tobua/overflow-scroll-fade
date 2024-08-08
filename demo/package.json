@@ -1,22 +1,21 @@
 {
   "name": "demo",
   "scripts": {
-    "format": "bun biome format . --write",
-    "lint": "bun biome lint .",
+    "check": "biome check --write .",
     "start": "rsbuild dev --open",
     "types": "tsc"
   },
   "dependencies": {
-    "@biomejs/biome": "^1.7.1",
-    "@rsbuild/core": "^0.6.7",
-    "@rsbuild/plugin-react": "^0.6.7",
-    "@types/react": "^18.3.1",
+    "@biomejs/biome": "^1.8.3",
+    "@rsbuild/core": "^1.0.1-beta.11",
+    "@rsbuild/plugin-react": "^1.0.1-beta.11",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "optica": "^3.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sugar-high": "^0.6.0",
-    "typescript": "^5.4.5"
+    "sugar-high": "^0.7.0",
+    "typescript": "^5.5.4"
   },
   "localDependencies": {
     "overflow-scroll-fade": ".."

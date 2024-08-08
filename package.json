@@ -7,18 +7,17 @@
   "license": "MIT",
   "author": "Matthias Giger",
   "scripts": {
-    "format": "bun biome format . --write",
-    "lint": "bun biome lint .",
+    "check": "biome check --write .",
     "types": "tsc"
   },
   "workspaces": [
     "demo"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^1.6.4",
-    "@types/react": "^18.2.78",
-    "typescript": "^5.4.5",
-    "zero-configuration": "^0.5.5"
+    "@biomejs/biome": "^1.8.3",
+    "@types/react": "^18.3.3",
+    "typescript": "^5.5.4",
+    "zero-configuration": "^0.17.2"
   },
   "peerDependencies": {
     "react": ">= 18",
@@ -66,13 +65,6 @@
     },
     "biome": {
       "extends": "recommended",
-      "linter": {
-        "rules": {
-          "nursery": {
-            "all": true
-          }
-        }
-      },
       "files": {
         "ignore": [
           "demo"
