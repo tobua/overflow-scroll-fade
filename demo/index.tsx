@@ -309,6 +309,13 @@ const MyGrid = () => (
         <Box />
         <Box />
       </Scroll>
+      <Heading as="h3">Tons of overflow</Heading>
+      <Paragraph>Fade in takes a long time to appear.</Paragraph>
+      <Scroll overflowStyle={{ gap: scale(10) }}>
+        {Array.from({ length: 200 }).map((_, i) => (
+          <Box key={i} />
+        ))}
+      </Scroll>
       <Heading as="h3">Dynamic Content Size</Heading>
       <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
         <DynamicContent>

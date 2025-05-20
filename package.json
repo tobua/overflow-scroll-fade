@@ -14,10 +14,10 @@
     "demo"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@types/react": "^18.3.3",
-    "typescript": "^5.5.4",
-    "zero-configuration": "^0.17.2"
+    "@biomejs/biome": "^1.9.4",
+    "@types/react": "^19.1.4",
+    "typescript": "^5.8.3",
+    "zero-configuration": "^0.19.0"
   },
   "peerDependencies": {
     "react": ">= 18",

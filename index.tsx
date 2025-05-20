@@ -1,14 +1,15 @@
-import { type CSSProperties, type Dispatch, type JSX, type SetStateAction, useEffect, useRef, useState } from 'react'
+import type React from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Arrow, type ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
 import type { FadeDirection, Props, ScrollDirection } from './types'
 
 const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style
 
-const wrapperStyles: CSSProperties = {
+const wrapperStyles: React.CSSProperties = {
   position: 'relative',
 }
 
-const overflowStyles = (direction: ScrollDirection): CSSProperties => ({
+const overflowStyles = (direction: ScrollDirection): React.CSSProperties => ({
   display: 'flex',
   overflow: 'auto',
   height: direction === 'vertical' ? '100%' : 'auto',
@@ -16,7 +17,7 @@ const overflowStyles = (direction: ScrollDirection): CSSProperties => ({
   scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
 })
 
-const fadeStyles = (direction: FadeDirection, horizontal: boolean, color: string): CSSProperties => ({
+const fadeStyles = (direction: FadeDirection, horizontal: boolean, color: string): React.CSSProperties => ({
   display: 'flex',
   position: 'absolute',
   outline: 'none',
@@ -74,7 +75,7 @@ function checkOverflow(
   element: HTMLDivElement,
   direction: ScrollDirection,
   hasOverflow: boolean,
-  setHasOverflow: Dispatch<SetStateAction<boolean>>,
+  setHasOverflow: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   if (element) {
     if (direction === 'horizontal') {
@@ -102,7 +103,7 @@ function getUserNodes(element: HTMLDivElement) {
   return nodes
 }
 
-function Fallback<T extends keyof JSX.IntrinsicElements = 'div'>({
+function Fallback<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   children,
   overflowStyle,
   style,
@@ -134,7 +135,7 @@ function Fade({
   arrow,
 }: {
   direction: FadeDirection
-  style?: CSSProperties
+  style?: React.CSSProperties
   color: string
   arrow: ArrowProps | boolean
 }) {
@@ -165,7 +166,7 @@ function Fade({
   )
 }
 
-export function Scroll<T extends keyof JSX.IntrinsicElements = 'div'>({
+export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   direction = 'horizontal',
   color = '#FFF',
   style = {},
@@ -201,7 +202,7 @@ export function Scroll<T extends keyof JSX.IntrinsicElements = 'div'>({
     observer.observe(element, { childList: true, subtree: true })
 
     // Observe if any of the children change their size.
-    if (userNodes.length) {
+    if (userNodes.length > 0) {
       for (const node of userNodes) {
         resizeObserver.observe(node)
       }

@@ -1,4 +1,4 @@
-import type { CSSProperties, JSX, ReactNode } from 'react'
+import type React from 'react'
 import type { FadeDirection } from './types'
 
 type ArrowIcon = 'arrow-rounded' | 'pointer-rounded' | 'arrow' | 'pointer'
@@ -9,7 +9,7 @@ export interface ArrowProps {
   icon: ArrowIcon
   color: string
   image?: string
-  markup?: JSX.Element | ReactNode
+  markup?: React.JSX.Element | React.ReactNode
 }
 
 export const defaultArrowProps: ArrowProps = {
@@ -26,7 +26,7 @@ const directionToRotation = {
 }
 
 export function Arrow({ icon, color, markup, image, direction }: ArrowProps & { direction: FadeDirection }) {
-  const style: CSSProperties = {
+  const style: React.CSSProperties = {
     width: 12,
     height: 12,
     display: 'block',
