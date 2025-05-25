@@ -3,18 +3,17 @@ import { useEffect, useRef, useState } from 'react'
 import { Arrow, type ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
 import type { FadeDirection, Props, ScrollDirection } from './types'
 
-const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style
+// @ts-ignore Non-Standard API
+const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style && typeof ScrollTimeline !== 'undefined'
 
 const wrapperStyles: React.CSSProperties = {
   position: 'relative',
 }
 
-const overflowStyles = (direction: ScrollDirection): React.CSSProperties => ({
+const overflowStyles = (_direction?: ScrollDirection): React.CSSProperties => ({
   display: 'flex',
   overflow: 'auto',
-  height: direction === 'vertical' ? '100%' : 'auto',
-  scrollTimelineName: '--indicate-scroll-element',
-  scrollTimelineAxis: direction === 'horizontal' ? 'x' : 'y',
+  height: '100%',
 })
 
 const fadeStyles = (direction: FadeDirection, horizontal: boolean, color: string): React.CSSProperties => ({
@@ -35,40 +34,26 @@ const fadeStyles = (direction: FadeDirection, horizontal: boolean, color: string
   visibility: direction === 'left' || direction === 'top' ? 'hidden' : 'visible',
 })
 
-function setScrollTimelineAnimation(
-  element: HTMLDivElement,
-  fade: HTMLButtonElement,
-  direction: FadeDirection,
-  scrollDirection: ScrollDirection,
-) {
-  const scrollHeight = element.scrollHeight - element.clientHeight
-  const scrollWidth = element.scrollWidth - element.clientWidth
-  const horizontalPercentage = scrollWidth / element.clientWidth / 100
-  const verticalPercentage = scrollHeight / element.clientHeight / 100
-
+function setScrollTimelineAnimation(element: HTMLDivElement, fade: HTMLButtonElement, direction: FadeDirection) {
   const isHorizontal = direction === 'left' || direction === 'right'
-
-  if (isHorizontal && (scrollWidth < 1 || horizontalPercentage === Number.POSITIVE_INFINITY)) {
-    return
+  const values = {
+    visible: isHorizontal ? element.clientWidth : element.clientHeight,
+    full: isHorizontal ? element.scrollWidth : element.scrollHeight,
   }
+  const visiblePercentage = 0.2 * (values.visible / values.full) // 20% of visible size for fade animation.
 
-  if (!isHorizontal && (scrollHeight < 1 || verticalPercentage === Number.POSITIVE_INFINITY)) {
-    return
-  }
-
+  // @ts-ignore Non-Standard API
   const scrollTimeline = new ScrollTimeline({
     source: element,
-    axis: scrollDirection === 'horizontal' ? 'inline' : 'block',
+    axis: direction === 'left' || direction === 'right' ? 'inline' : 'block',
   })
 
   const start = direction === 'left' || direction === 'top'
   fade.animate(
     {
-      opacity: start ? [0, 0, 1] : [1, 1, 0],
+      opacity: start ? [0, 1, 1] : [1, 1, 0],
       visibility: start ? ['hidden', 'visible', 'visible'] : ['visible', 'visible', 'hidden'],
-      offset: start
-        ? [0, direction === 'top' ? verticalPercentage : horizontalPercentage, 1]
-        : [0, direction === 'bottom' ? 1 - verticalPercentage : 1 - horizontalPercentage, 1],
+      offset: start ? [0, visiblePercentage, 1] : [0, 1 - visiblePercentage, 1],
     },
     {
       timeline: scrollTimeline,
@@ -94,21 +79,16 @@ const scrollByDirection = {
 
 function checkOverflow(
   element: HTMLDivElement,
-  direction: ScrollDirection,
-  hasOverflow: boolean,
-  setHasOverflow: React.Dispatch<React.SetStateAction<boolean>>,
+  overflowDirections: { horizontal: boolean; vertical: boolean },
+  setOverflowDirections: React.Dispatch<React.SetStateAction<{ horizontal: boolean; vertical: boolean }>>,
 ) {
+  const directions = { horizontal: false, vertical: false }
   if (element) {
-    if (direction === 'horizontal') {
-      const nextState = element.scrollWidth > element.clientWidth
-      if (nextState !== hasOverflow) {
-        setHasOverflow(nextState)
-      }
-    } else {
-      const nextState = element.scrollHeight > element.clientHeight
-      if (nextState !== hasOverflow) {
-        setHasOverflow(nextState)
-      }
+    directions.horizontal = element.scrollWidth > element.clientWidth
+    directions.vertical = element.scrollHeight > element.clientHeight
+
+    if (JSON.stringify(directions) !== JSON.stringify(overflowDirections)) {
+      setOverflowDirections(directions)
     }
   }
 }
@@ -151,7 +131,6 @@ function Fallback<T extends keyof React.JSX.IntrinsicElements = 'div'>({
 
 function Fade({
   direction,
-  scrollDirection,
   style,
   color,
   arrow,
@@ -159,7 +138,6 @@ function Fade({
   element,
 }: {
   direction: FadeDirection
-  scrollDirection: ScrollDirection
   style?: React.CSSProperties
   color: string
   arrow: ArrowProps | boolean
@@ -171,9 +149,9 @@ function Fade({
 
   useEffect(() => {
     if (element && ref.current) {
-      setScrollTimelineAnimation(element, ref.current, direction, scrollDirection)
+      setScrollTimelineAnimation(element, ref.current, direction)
     }
-  }, [ref, direction, scrollDirection, element])
+  }, [ref, direction, element])
 
   return (
     <button
@@ -201,7 +179,6 @@ function Fade({
 }
 
 export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
-  direction = 'horizontal',
   color = '#FFF',
   style = {},
   overflowStyle = {},
@@ -212,7 +189,7 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   as: Component = 'div' as T,
   ...props
 }: Props<T>) {
-  const [hasOverflow, setHasOverflow] = useState(false)
+  const [overflowDirections, setOverflowDirections] = useState({ horizontal: false, vertical: false })
   const scrollRef = useRef<HTMLDivElement>(null)
   const fadeTopRef = useRef<HTMLButtonElement>(null)
   const fadeRightRef = useRef<HTMLButtonElement>(null)
@@ -227,14 +204,14 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
 
     const userNodes = getUserNodes(element)
 
-    checkOverflow(element, direction, hasOverflow, setHasOverflow)
+    checkOverflow(element, overflowDirections, setOverflowDirections)
 
     const resizeObserver = new ResizeObserver(() => {
-      checkOverflow(element, direction, hasOverflow, setHasOverflow)
+      checkOverflow(element, overflowDirections, setOverflowDirections)
     })
 
     const observer = new MutationObserver(() => {
-      checkOverflow(element, direction, hasOverflow, setHasOverflow)
+      checkOverflow(element, overflowDirections, setOverflowDirections)
     })
 
     // Observe if more children are rendered.
@@ -252,7 +229,7 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
         resizeObserver.unobserve(element)
       }
     }
-  }, [hasOverflow, direction])
+  }, [overflowDirections])
 
   if (!supportsScrollTimeline) {
     return (
@@ -268,57 +245,21 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
       <div
         ref={scrollRef}
         style={{
-          ...overflowStyles(direction),
+          ...overflowStyles(),
           ...overflowStyle,
         }}
       >
         {children}
-        {hasOverflow && (
+        {overflowDirections.vertical && (
           <>
-            {direction === 'vertical' && (
-              <Fade
-                ref={fadeTopRef}
-                element={scrollRef.current}
-                style={indicatorStyle}
-                color={color}
-                direction="top"
-                scrollDirection={direction}
-                arrow={arrow}
-              />
-            )}
-            {direction === 'horizontal' && (
-              <Fade
-                ref={fadeRightRef}
-                element={scrollRef.current}
-                style={indicatorStyle}
-                color={color}
-                direction="right"
-                scrollDirection={direction}
-                arrow={arrow}
-              />
-            )}
-            {direction === 'vertical' && (
-              <Fade
-                ref={fadeBottomRef}
-                element={scrollRef.current}
-                style={indicatorStyle}
-                color={color}
-                direction="bottom"
-                scrollDirection={direction}
-                arrow={arrow}
-              />
-            )}
-            {direction === 'horizontal' && (
-              <Fade
-                ref={fadeLeftRef}
-                element={scrollRef.current}
-                style={indicatorStyle}
-                color={color}
-                direction="left"
-                scrollDirection={direction}
-                arrow={arrow}
-              />
-            )}
+            <Fade ref={fadeTopRef} element={scrollRef.current} style={indicatorStyle} color={color} direction="top" arrow={arrow} />
+            <Fade ref={fadeBottomRef} element={scrollRef.current} style={indicatorStyle} color={color} direction="bottom" arrow={arrow} />
+          </>
+        )}
+        {overflowDirections.horizontal && (
+          <>
+            <Fade ref={fadeRightRef} element={scrollRef.current} style={indicatorStyle} color={color} direction="right" arrow={arrow} />
+            <Fade ref={fadeLeftRef} element={scrollRef.current} style={indicatorStyle} color={color} direction="left" arrow={arrow} />
           </>
         )}
       </div>

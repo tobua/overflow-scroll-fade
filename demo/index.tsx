@@ -33,12 +33,6 @@ const Color = {
   boxes: ['#0075ff', '#ff002e', '#00ba6c', '#eb00ff', '#ffb800', '#09d3c7'],
 }
 
-const checkeredBackground = (color: string): CSSProperties => ({
-  backgroundImage: `linear-gradient(45deg, ${color} 25%, transparent 25%), linear-gradient(-45deg, ${color} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${color} 75%), linear-gradient(-45deg, transparent 75%, ${color} 75%)`,
-  backgroundSize: '20px 20px',
-  backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
-})
-
 const headingStyles = (as: 'h1' | 'h2' | 'h3'): CSSProperties => ({
   margin: 0,
   fontSize: as === 'h1' ? scale(36) : scale(24),
@@ -76,7 +70,7 @@ function Paragraph({ style, ...props }: JSX.IntrinsicElements['p']) {
 
 function Code({ children }: { children: string }) {
   return (
-    <Scroll>
+    <Scroll overflowStyle={{ borderRadius: scale(20) }}>
       <div
         style={{
           display: 'flex',
@@ -84,7 +78,6 @@ function Code({ children }: { children: string }) {
           flexDirection: 'column',
           padding: scale(20),
           background: Color.blue.ultralight,
-          borderRadius: scale(20),
           fontFamily: 'monospace',
           whiteSpace: 'pre',
           fontSize: scale(16),
@@ -137,7 +130,7 @@ function DynamicContent({ children }) {
 function animateHeight() {
   const element = document.getElementById('animated-box')
   const startHeight = element.offsetHeight
-  let startTime = null
+  let startTime = 0
   const increase = startHeight < 200
   const duration = 3000
   const targetHeight = increase ? 250 : 50
@@ -237,7 +230,18 @@ const MyGrid = () => (
   </Scroll>
 )`}</Code>
       <Heading as="h2">Examples</Heading>
-      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
+      <Heading as="h3">Vertical & Horizontal</Heading>
+      <Scroll as="main" style={{ maxHeight: 150, maxWidth: 340 }} overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div style={{ display: 'flex', gap: scale(10) }} key={i}>
+            {Array.from({ length: 6 }).map((_, j) => (
+              <Box key={j} />
+            ))}
+          </div>
+        ))}
+      </Scroll>
+      <Heading as="h3">Horizontal</Heading>
+      <Scroll style={{ maxWidth: 340 }} overflowStyle={{ gap: scale(10) }}>
         <Box />
         <Box />
         <Box />
@@ -246,7 +250,7 @@ const MyGrid = () => (
         <Box />
       </Scroll>
       <Heading as="h3">Vertical</Heading>
-      <Scroll as="main" style={{ maxHeight: 160 }} direction="vertical" overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
+      <Scroll as="main" style={{ maxHeight: 150 }} overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
         <Box />
         <Box />
         <Box />
@@ -317,7 +321,7 @@ const MyGrid = () => (
         ))}
       </Scroll>
       <Heading as="h3">Dynamic Content Size</Heading>
-      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
+      <Scroll style={{ maxWidth: 340 }} overflowStyle={{ gap: scale(10) }}>
         <DynamicContent>
           {(frame: number) => (
             <>
@@ -333,7 +337,7 @@ const MyGrid = () => (
           )}
         </DynamicContent>
       </Scroll>
-      <Scroll style={{ maxWidth: 360 }} overflowStyle={{ gap: scale(10) }}>
+      <Scroll style={{ maxWidth: 340 }} overflowStyle={{ gap: scale(10) }}>
         <DynamicContent>
           {(frame: number) => (
             <>
@@ -351,7 +355,7 @@ const MyGrid = () => (
           )}
         </DynamicContent>
       </Scroll>
-      <Scroll style={{ maxWidth: 360 }}>
+      <Scroll style={{ maxWidth: 340 }}>
         <DynamicContent>
           {(frame: number) => (
             <div style={{ display: 'flex', gap: scale(10) }}>
@@ -372,11 +376,7 @@ const MyGrid = () => (
         </DynamicContent>
       </Scroll>
       <Heading as="h3">Dynamic Vertical Content Size</Heading>
-      <Scroll
-        style={{ height: 200 }}
-        direction="vertical"
-        overflowStyle={{ gap: scale(10), flexDirection: 'column' }}
-      >
+      <Scroll style={{ height: 200 }} overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
         <AddMoreContent />
       </Scroll>
       <Heading as="h2">Configuration</Heading>
@@ -411,27 +411,6 @@ const ResultingStructure = () => (
     </div>
   </div>
 )`}</Code>
-      <Heading as="h2">Development Playground</Heading>
-      <Scroll style={{ maxWidth: 300 }} overflowStyle={{ gap: scale(10) }}>
-        <div
-          style={{
-            width: 1000,
-            height: 50,
-            ...checkeredBackground(Color.boxes[0]),
-            flex: '0 0 auto',
-          }}
-        />
-      </Scroll>
-      <Scroll direction="vertical" style={{ maxHeight: 100 }} overflowStyle={{ gap: scale(20) }}>
-        <div
-          style={{
-            width: 200,
-            height: 300,
-            ...checkeredBackground(Color.boxes[1]),
-            flex: '0 0 auto',
-          }}
-        />
-      </Scroll>
     </div>
   )
 }

@@ -7,7 +7,7 @@
 Add a gradient-based dynamic fade effect to elements with scrollable overflow.
 
 - ⚛️ React JSX based
-- 🔄 Works with either horizontal or vertical overflow
+- 🔄 Automatically detects and supports horizontal and vertical overflow.
 - ❗ Requires the [ScrollTimeline](https://caniuse.com/mdn-api_scrolltimeline) API
   - Currently works in Chrome, Edge and Opera
 - ⚠️ Published as TypeScript and JSX see [this post on 𝕏](https://twitter.com/matthiasgiger/status/1766443368567971946) for the reasoning
@@ -21,7 +21,7 @@ Add a gradient-based dynamic fade effect to elements with scrollable overflow.
 import { Scroll } from 'overflow-scroll-fade'
 
 const MyScroll = () => (
-  <Scroll direction="horizontal">
+  <Scroll>
     <p>overflow-scroll-fade</p>
     <p>overflow-scroll-fade</p>
   </Scroll>

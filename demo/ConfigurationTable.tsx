@@ -28,10 +28,6 @@ export function Configuration() {
       <Header>Default value</Header>
       <Header>Type</Header>
       <Header>Description</Header>
-      <span>direction</span>
-      <Code>horizontal</Code>
-      <Code>'horizontal' | 'vertical'</Code>
-      <span>Scroll direction of the container.</span>
       <span>color</span>
       <Code>#FFF</Code>
       <Code>string</Code>

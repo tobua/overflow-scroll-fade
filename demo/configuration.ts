@@ -26,6 +26,9 @@ export const biome = {
       style: {
         useFilenamingConvention: 'off',
       },
+      suspicious: {
+        noArrayIndexKey: 'off',
+      },
     },
   },
   files: {
