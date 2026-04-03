@@ -21,6 +21,7 @@ export const gitignore = 'bundle'
 export const vscode = 'biome'
 export const biome = {
   extends: 'recommended',
+  root: false,
   linter: {
     rules: {
       style: {
@@ -32,7 +33,7 @@ export const biome = {
     },
   },
   files: {
-    ignore: ['rsbuild.config.ts'],
+    includes: ['**/*', '!rsbuild.config.ts'],
   },
 }
 

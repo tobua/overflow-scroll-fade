@@ -97,7 +97,7 @@ function getUserNodes(element: HTMLDivElement) {
   let nodes = Array.from(element.childNodes) as Element[]
 
   // Remove our absolutely positioned elements added to show overflow.
-  if (nodes.slice(-1)[0]?.tagName === 'BUTTON' && nodes.slice(-2)[0]?.tagName === 'BUTTON' && nodes.slice(-3)[0]?.tagName === 'STYLE') {
+  if (nodes.at(-1)?.tagName === 'BUTTON' && nodes.at(-2)?.tagName === 'BUTTON' && nodes.at(-3)?.tagName === 'STYLE') {
     nodes = nodes.slice(0, -3)
   }
 
@@ -165,8 +165,7 @@ function Fade({
         justifyContent: getArrowPosition(arrowConfiguration),
       }}
       onClick={(event) => {
-        const element = event.target as HTMLButtonElement
-        const container = element.parentElement as HTMLDivElement
+        const container = (event.target as HTMLButtonElement).parentElement as HTMLDivElement
         container.scrollTo({
           behavior: 'smooth',
           ...scrollByDirection[direction](container),
