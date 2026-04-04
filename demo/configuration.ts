@@ -30,6 +30,9 @@ export const biome = {
       suspicious: {
         noArrayIndexKey: 'off',
       },
+      correctness: {
+        noUndeclaredDependencies: 'off',
+      },
     },
   },
   files: {

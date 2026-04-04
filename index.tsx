@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Arrow, type ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
 import type { FadeDirection, Props, ScrollDirection } from './types'
 
-// @ts-ignore Non-Standard API
+// @ts-expect-error Non-Standard API
 const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style && typeof ScrollTimeline !== 'undefined'
 
 const wrapperStyles: React.CSSProperties = {
@@ -42,7 +42,7 @@ function setScrollTimelineAnimation(element: HTMLDivElement, fade: HTMLButtonEle
   }
   const visiblePercentage = 0.2 * (values.visible / values.full) // 20% of visible size for fade animation.
 
-  // @ts-ignore Non-Standard API
+  // @ts-expect-error Non-Standard API
   const scrollTimeline = new ScrollTimeline({
     source: element,
     axis: direction === 'left' || direction === 'right' ? 'inline' : 'block',
@@ -122,7 +122,7 @@ function Fallback<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   }
 
   return (
-    // @ts-ignore only types from 'div' inferred for some reason.
+    // @ts-expect-error only types from 'div' inferred for some reason.
     <Component style={styles} {...props}>
       {children}
     </Component>
@@ -188,7 +188,10 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   as: Component = 'div' as T,
   ...props
 }: Props<T>) {
-  const [overflowDirections, setOverflowDirections] = useState({ horizontal: false, vertical: false })
+  const [overflowDirections, setOverflowDirections] = useState({
+    horizontal: false,
+    vertical: false,
+  })
   const scrollRef = useRef<HTMLDivElement>(null)
   const fadeTopRef = useRef<HTMLButtonElement>(null)
   const fadeRightRef = useRef<HTMLButtonElement>(null)
@@ -239,7 +242,7 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
   }
 
   return (
-    // @ts-ignore only types from 'div' inferred for some reason.
+    // @ts-expect-error only types from 'div' inferred for some reason.
     <Component {...props} style={{ ...wrapperStyles, ...style }}>
       <div
         ref={scrollRef}

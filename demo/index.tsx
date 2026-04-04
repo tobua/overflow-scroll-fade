@@ -234,7 +234,7 @@ const MyGrid = () => (
       <Scroll as="main" style={{ maxHeight: 150, maxWidth: 340 }} overflowStyle={{ gap: scale(10), flexDirection: 'column' }}>
         {Array.from({ length: 6 }).map((_, i) => (
           <div style={{ display: 'flex', gap: scale(10) }} key={i}>
-            {Array.from({ length: 6 }).map((_, j) => (
+            {Array.from({ length: 6 }).map((_ignore, j) => (
               <Box key={j} />
             ))}
           </div>
