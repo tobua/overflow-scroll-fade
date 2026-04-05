@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Arrow, type ArrowProps, defaultArrowProps, getArrowPosition } from './arrow'
 import type { FadeDirection, Props, ScrollDirection } from './types'
 
-// @ts-expect-error Non-Standard API
 const supportsScrollTimeline = 'scrollTimeline' in document.documentElement.style && typeof ScrollTimeline !== 'undefined'
 
 const wrapperStyles: React.CSSProperties = {
@@ -42,7 +41,6 @@ function setScrollTimelineAnimation(element: HTMLDivElement, fade: HTMLButtonEle
   }
   const visiblePercentage = 0.2 * (values.visible / values.full) // 20% of visible size for fade animation.
 
-  // @ts-expect-error Non-Standard API
   const scrollTimeline = new ScrollTimeline({
     source: element,
     axis: direction === 'left' || direction === 'right' ? 'inline' : 'block',
