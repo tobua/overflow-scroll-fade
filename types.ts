@@ -4,7 +4,7 @@ import type { ArrowProps } from './arrow'
 export type FadeDirection = 'top' | 'right' | 'bottom' | 'left'
 export type ScrollDirection = 'horizontal' | 'vertical'
 
-export type Props<T extends keyof React.JSX.IntrinsicElements = 'div'> = React.JSX.IntrinsicElements[T] & {
+export type Props<T extends keyof React.JSX.IntrinsicElements = 'div'> = Omit<React.JSX.IntrinsicElements[T], 'direction' | 'color'> & {
   as?: T
   direction?: ScrollDirection
   color?: string

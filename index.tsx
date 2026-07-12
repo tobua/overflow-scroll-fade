@@ -233,6 +233,7 @@ export function Scroll<T extends keyof React.JSX.IntrinsicElements = 'div'>({
 
   if (!supportsScrollTimeline) {
     return (
+      // @ts-expect-error Generic element props can't be statically verified for arbitrary T.
       <Fallback style={style} overflowStyle={overflowStyle} fallbackStyle={fallbackStyle} as={Component} {...props}>
         {children}
       </Fallback>

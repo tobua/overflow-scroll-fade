@@ -11,3 +11,9 @@ test('Returns correct clamp function values.', () => {
     </Scroll>,
   ).toBeDefined()
 })
+
+test('Accepts properties and missing properties.', () => {
+  expect(<Scroll />).toBeDefined()
+  // @ts-expect-error Style doesn't take strings.
+  expect(<Scroll as="div" style="hey" />).toBeDefined()
+})

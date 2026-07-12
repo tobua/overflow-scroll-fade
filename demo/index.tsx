@@ -111,7 +111,7 @@ function Box({ size = 1 }) {
   return <div style={boxStyles(size)} />
 }
 
-function DynamicContent({ children }) {
+function DynamicContent({ children }: { children: (frame: number) => React.ReactNode }) {
   const [frame, setFrame] = useState(0)
 
   colorIndex = 0
@@ -129,7 +129,8 @@ function DynamicContent({ children }) {
 
 function animateHeight() {
   const element = document.getElementById('animated-box')
-  const startHeight = element.offsetHeight
+
+  const startHeight = element!.offsetHeight
   let startTime = 0
   const increase = startHeight < 200
   const duration = 3000
@@ -147,13 +148,13 @@ function animateHeight() {
       if (nextHeight > targetHeight) {
         return
       }
-      element.style.height = `${Math.min(nextHeight, targetHeight)}px`
+      element!.style.height = `${Math.min(nextHeight, targetHeight)}px`
     } else {
       const nextHeight = startHeight - (startHeight - targetHeight) * (progress / duration)
       if (nextHeight < targetHeight) {
         return
       }
-      element.style.height = `${Math.max(nextHeight, targetHeight)}px`
+      element!.style.height = `${Math.max(nextHeight, targetHeight)}px`
     }
 
     if (progress < duration) {

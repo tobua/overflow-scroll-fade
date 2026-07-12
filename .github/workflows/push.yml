@@ -16,6 +16,7 @@ jobs:
       - run: bun install
       - run: bun check
       - run: bun types
+      - run: bun test
       - name: 🛠️ Build Demo
         run: |
           cd demo
