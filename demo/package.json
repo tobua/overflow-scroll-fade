@@ -5,8 +5,8 @@
     "types": "tsc"
   },
   "dependencies": {
-    "@biomejs/biome": "^2.5.3",
-    "@rsbuild/core": "^2.1.5",
+    "@biomejs/biome": "^2.5.4",
+    "@rsbuild/core": "^2.1.6",
     "@rsbuild/plugin-react": "^2.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
